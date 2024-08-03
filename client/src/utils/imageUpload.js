@@ -1,3 +1,5 @@
+// imageUpload.js
+
 export const checkImage = (file) => {
     let err = ""
     if(!file) return err = "File does not exist."
@@ -11,7 +13,6 @@ export const checkImage = (file) => {
     return err;
 }
 
-
 export const imageUpload = async (images) => {
     let imgArr = [];
     for(const item of images){
@@ -23,16 +24,22 @@ export const imageUpload = async (images) => {
             formData.append("file", item)
         }
         
-        formData.append("upload_preset", "efxjficn")
-        formData.append("cloud_name", "devat-channel")
+        const cloudName = "dvys5ctd6"; // Replace with your actual Cloudinary cloud name
+        const uploadPreset = "my_upload_preset"; // Replace with your actual upload preset
 
-        const res = await fetch("https://api.cloudinary.com/v1_1/devat-channel/upload", {
-            method: "POST",
-            body: formData
-        })
-        
-        const data = await res.json()
-        imgArr.push({public_id: data.public_id, url: data.secure_url})
+        formData.append("upload_preset", uploadPreset);
+
+        try {
+            const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+                method: "POST",
+                body: formData
+            });
+            
+            const data = await res.json();
+            imgArr.push({public_id: data.public_id, url: data.secure_url});
+        } catch (error) {
+            console.error("Error uploading image:", error);
+        }
     }
     return imgArr;
 }
